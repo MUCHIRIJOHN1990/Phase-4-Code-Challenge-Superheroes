@@ -6,9 +6,10 @@ from models import Hero, HeroPower, Power, db
 if __name__ == '__main__':
     with app.app_context():
         print("Clearing db...")
+        HeroPower.query.delete()
         Power.query.delete()
         Hero.query.delete()
-        HeroPower.query.delete()
+
         print("Seeding powers...")
         powers = [
             Power(name="super strength",
@@ -26,6 +27,7 @@ if __name__ == '__main__':
                   description="can stretch the human body to extreme lengths"),
         ]
         db.session.add_all(powers)
+
         print("Seeding heroes...")
         heroes = [
             Hero(name="Kamala Khan", super_name="Ms. Marvel"),
@@ -40,13 +42,14 @@ if __name__ == '__main__':
             Hero(name="Elektra Natchios", super_name="Elektra"),
         ]
         db.session.add_all(heroes)
+
         print("Adding powers to heroes...")
         strengths = ["Strong", "Weak", "Average"]
-        hero_powers = []
+        heroes_powers = []
         for hero in heroes:
             power = rc(powers)
-            hero_powers.append(
+            heroes_powers.append(
                 HeroPower(hero=hero, power=power, strength=rc(strengths)))
-            db.session.add_all(hero_powers)
+            db.session.add_all(heroes_powers)
             db.session.commit()
-            print("Done seeding!")
+        print("Done seeding!")

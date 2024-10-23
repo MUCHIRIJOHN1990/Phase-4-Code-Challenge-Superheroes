@@ -69,6 +69,13 @@ def create_hero_power():
     if not power:
         return jsonify({'errors': ['Invalid power_id provided.']}), 400
 
+    # Ensure hero_power does not already exists
+    hero_power = db.session.query(HeroPower).filter_by(hero_id=hero.id,
+                                                       power_id=power.id)
+
+    if hero_power:
+        return jsonify({'errors': ['HeroPower already exists']}), 400
+
     # Create the new HeroPower relationship
     new_hero_power = HeroPower(strength=data.get('strength'),
                                hero_id=hero.id,
@@ -76,6 +83,8 @@ def create_hero_power():
 
     db.session.add(new_hero_power)
     db.session.commit()
+
+    return new_hero_power.to_dict(rules=('-hero_powers', ))
 
 
 if __name__ == '__main__':
